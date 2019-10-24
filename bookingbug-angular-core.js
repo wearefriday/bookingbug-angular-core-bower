@@ -43,36 +43,36 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
     } else {
       return null;
     }
- 
+
     var getHostName = function (path) {
       var a = document.createElement('a');
       a.href = path;
       return a.hostname;
     }
- 
+
     var isLocalCall = function (reqUrl) {
       var reqHost = getHostName(reqUrl),
         localHost = getHostName($browser.url());
       if (reqHost == '') return true;
- 
-      patt = new RegExp( localHost + "$", 'i'); 
+
+      patt = new RegExp( localHost + "$", 'i');
       return patt.test(reqHost);
     }
- 
+
     function completeRequest(callback, status, response, headersString) {
       var url = url || $browser.url(),
         URL_MATCH = /^([^:]+):\/\/(\w+:{0,1}\w*@)?(\{?[\w\.-]*\}?)(:([0-9]+))?(\/[^\?#]*)?(\?([^#]*))?(#(.*))?$/;
- 
- 
+
+
       // URL_MATCH is defined in src/service/location.js
       var protocol = (url.match(URL_MATCH) || ['', locationProtocol])[1];
- 
+
       // fix status code for file protocol (it's always 0)
       status = (protocol == 'file') ? (response ? 200 : 404) : status;
- 
+
       // normalize IE bug (http://bugs.jquery.com/ticket/1450)
       status = status == 1223 ? 204 : status;
- 
+
       callback(status, response, headersString);
       $browser.$$completeOutstandingRequest(angular.noop);
     }
@@ -90,7 +90,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
         success: function (respObj) {
           headers = 'Content-Type: ' + respObj.contentType;
           if (respObj.authToken)
-            headers += '\r\n' + 'Auth-Token: ' + respObj.authToken; 
+            headers += '\r\n' + 'Auth-Token: ' + respObj.authToken;
           completeRequest(callback, respObj.statusCode.status, respObj.responseText, headers);
         },
         error: function (data) {
@@ -101,7 +101,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
     return function (method, url, post, callback, headers, timeout, withCredentials) {
       $browser.$$incOutstandingRequestCount();
       url = url || $browser.url();
- 
+
       if (isLocalCall(url) ) {
         xhr(method, url, post, callback, headers, timeout, withCredentials);
       } else {
@@ -114,7 +114,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
         }, timeout);
       }
     }
- 
+
   }
 
 
@@ -334,12 +334,6 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
   angular.module('BB').value('AppConfig', {
     appId: 'f6b16c23',
     appKey: 'f0bc4f65f4fbfe7b4b3b7264b655f5eb'
-  });
-
-  angular.module('BB').value('AirbrakeConfig', {
-    projectId: '122836',
-    projectKey: 'e6d6710b2cf00be965e8452d6a384d37',
-    environment: window.location.hostname === 'localhost' ? 'development' : 'production'
   });
 
   if (window.use_no_conflict) {
@@ -1625,7 +1619,7 @@ angular.module('ngStorage', [])
 .factory('$localStorage', [
   '$window', '$fakeStorage',
   function($window, $fakeStorage) {
-    function isStorageSupported(storageName) 
+    function isStorageSupported(storageName)
     {
       var testKey = 'test',
         storage = $window[storageName];
@@ -1634,8 +1628,8 @@ angular.module('ngStorage', [])
         storage.setItem(testKey, '1');
         storage.removeItem(testKey);
         return true;
-      } 
-      catch (error) 
+      }
+      catch (error)
       {
         return false;
       }
@@ -1669,7 +1663,7 @@ angular.module('ngStorage', [])
 .factory('$sessionStorage', [
   '$window', '$fakeStorage',
   function($window, $fakeStorage) {
-    function isStorageSupported(storageName) 
+    function isStorageSupported(storageName)
     {
       var testKey = 'test',
         storage = $window[storageName];
@@ -1678,8 +1672,8 @@ angular.module('ngStorage', [])
         storage.setItem(testKey, '1');
         storage.removeItem(testKey);
         return true;
-      } 
-      catch (error) 
+      }
+      catch (error)
       {
         return false;
       }
@@ -1722,21 +1716,21 @@ angular.module('ngLocalData', ['angular-hal']).
     storage = function()
     {
       return $sessionStorage
-    } 
+    }
     localSave = function(key, item){
-      storage().setItem(key, item.$toStore())   
-    } 
+      storage().setItem(key, item.$toStore())
+    }
     localLoad = function(key){
       res =  jsonData(storage().getItem(key))
       if (res)
-      {  
+      {
         r = halClient.createResource(res)
         def = $q.defer()
         def.resolve(r)
         return def.promise
       }
       return null
-    } 
+    }
     localDelete = function(key) {
       storage().removeItem(key)
     }
@@ -1766,13 +1760,13 @@ angular.module('ngLocalData', ['angular-hal']).
       has: function(key)
       {
         if (!data[key])
-        { 
+        {
           res = localLoad(key)
           if (res)
             data[key] = res
         }
         return (key in data)
-      }      
+      }
     }
 
 }]).
@@ -1789,7 +1783,7 @@ angular.module('ngLocalData', ['angular-hal']).
       LocalData.prototype.storage = function()
       {
         return $sessionStorage
-      }  
+      }
 
       LocalData.prototype.localSave = function(item)
       {
@@ -1833,7 +1827,7 @@ angular.module('ngLocalData', ['angular-hal']).
 
      //   channel.bind('add', function(data) {
      //     ds.data_store.push(data);
-     //     $rootScope.$broadcast("Refresh_" + ds.store_name, "Updated");          
+     //     $rootScope.$broadcast("Refresh_" + ds.store_name, "Updated");
      //   });
 
       }
@@ -1855,7 +1849,7 @@ angular.module('ngLocalData', ['angular-hal']).
     };
 
 
-    
+
     return LocalDataFactory
 }]);
 
@@ -1866,7 +1860,7 @@ getControllerScope = function(controller, fn){
   $(document).ready(function(){
     var $element = $('div[data-ng-controller="' + controller + '"]');
     var scope = angular.element($element).scope();
-    fn(scope); 
+    fn(scope);
   });
 }
 
@@ -9105,7 +9099,7 @@ function getURIparam( name ){
     * @name setTimeRange
     * @methodOf BB.Directives:bbTimeRangeStacked
     * @description
-    * Set time range in according of selected_date 
+    * Set time range in according of selected_date
     *
     * @param {date} selected_date The selected date from multi time range list
     * @param {date} start_date The start date of range list
@@ -16240,7 +16234,7 @@ angular.module('BB.Directives')
   * @description
   * Use with forms to add enhanced validation. When using with ng-form, submitForm
   * needs to be called manually as submit event is not raised.
-  
+
   *
   * @example
   * <div ng-form name="example_form" bb-form></div>
@@ -16371,7 +16365,7 @@ angular.module('BB.Directives')
   *
   * @description
   * Use with modal templates to ensure modal height does not exceed window height
-  
+
   *
   * @example
   * <div bb-modal></div>
@@ -16415,7 +16409,7 @@ angular.module('BB.Directives')
   *
   * @description
   * Adds a background-image to an element
-  
+
   * @param
   * {string} url
   *
@@ -17939,7 +17933,7 @@ angular.module('BB.Directives')
       * @name getQuestion
       * @methodOf BB.Models:Answer
       * @description
-      * Build an array of questions 
+      * Build an array of questions
       *
       * @returns {promise} A promise for the question/s
        */
@@ -19731,7 +19725,7 @@ angular.module('BB.Directives')
       * Set person according to per parameter
       *
       * @param {object} per A hash representing a person object
-      
+
       * @param {boolean} set_selected The returned set resource for basket item
        */
 
@@ -25115,44 +25109,6 @@ angular.module('BB.Directives')
 
   /***
   * @ngdoc service
-  * @name BB.Services:Airbrake
-  *
-  * @description
-  * JavaScript notifier for capturing errors in web browsers and reporting them to Airbrake.
-  *
-   */
-  angular.module('BB.Services').factory('$exceptionHandler', function($log, AirbrakeConfig) {
-    var airbrake;
-    airbrake = new airbrakeJs.Client({
-      projectId: AirbrakeConfig.projectId,
-      projectKey: AirbrakeConfig.projectKey
-    });
-    airbrake.addFilter(function(notice) {
-      if (AirbrakeConfig.environment === 'development' || !notice.params.from_sdk) {
-        return false;
-      }
-      notice.context.environment = 'production';
-      return notice;
-    });
-    return function(exception, cause, sdkError) {
-      $log.error(exception);
-      airbrake.notify({
-        error: exception,
-        params: {
-          angular_cause: cause,
-          from_sdk: sdkError
-        }
-      });
-    };
-  });
-
-}).call(this);
-
-(function() {
-  'use strict';
-
-  /***
-  * @ngdoc service
   * @name BB.Services:Alert
   *
   * @description
@@ -26150,7 +26106,7 @@ angular.module('BB.Directives')
     * @name checkPerson
     * @methodOf BB.Services:DateTimeUtilities
     * @description
-    * Checks if basket_item has default person 
+    * Checks if basket_item has default person
     * @param {Object} basket_item The basket item object
     * @param {Object} item_defaults The item defaults object
     *
@@ -26214,7 +26170,7 @@ angular.module('BB.Directives')
       * @name convertMomentToTime
       * @methodOf BB.Services:DateTimeUtilities
       * @description
-      * Converts moment object to time 
+      * Converts moment object to time
       * @param {Moment} datetime the datetime object to convert
       *
       * @returns {integer} Datetime integer converted from moment object
@@ -26228,9 +26184,9 @@ angular.module('BB.Directives')
       * @name checkDefaultTime
       * @methodOf BB.Services:DateTimeUtilities
       * @description
-      *  Checks if basket_item default time exists 
+      *  Checks if basket_item default time exists
       * @param {Moment} date The date object
-      * @param {Array} time_slots An array of time slots 
+      * @param {Array} time_slots An array of time slots
       * @param {Object} basket_item The basket item object
       * @param {Object} item_defaults The item defaults object
       * @returns {Object} object describing matching slot
@@ -28424,7 +28380,7 @@ angular.module('BB.Directives')
   * @name BB.Services:PathHelper
   *
   * @description
-  * Helper service for retrieving params from $location.path 
+  * Helper service for retrieving params from $location.path
   *
    */
   angular.module('BB.Services').factory('PathHelper', function($urlMatcherFactory, $location) {
